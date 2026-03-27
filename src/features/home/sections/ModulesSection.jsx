@@ -1,4 +1,5 @@
 import { moduleCards, primaryModule } from '../data/content'
+import { Link } from 'react-router-dom'
 
 function ModulesSection({ heroImg }) {
   return (
@@ -10,9 +11,9 @@ function ModulesSection({ heroImg }) {
             Hand-picked courses to accelerate your growth.
           </p>
         </div>
-        <a href="#" className="text-sm font-semibold text-blue-700 hover:text-blue-800">
+        <Link to="/course-catalog" className="text-sm font-semibold text-blue-700 hover:text-blue-800">
           View All Courses →
-        </a>
+        </Link>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -23,9 +24,12 @@ function ModulesSection({ heroImg }) {
             <p className="mt-1 text-sm text-slate-600">{primaryModule.description}</p>
             <div className="mt-4 flex items-center justify-between">
               <span className="text-lg font-bold">{primaryModule.price}</span>
-              <button className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800">
+              <Link
+                to="/course-player"
+                className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800"
+              >
                 Enroll Now
-              </button>
+              </Link>
             </div>
           </div>
         </article>
@@ -42,9 +46,9 @@ function ModulesSection({ heroImg }) {
                   <h3 className="text-sm font-semibold">{module.title}</h3>
                   <p className="text-xs text-slate-500">{module.price}</p>
                 </div>
-                <button className="text-xs font-semibold text-blue-700 hover:text-blue-800">
+                <Link to="/course-player" className="text-xs font-semibold text-blue-700 hover:text-blue-800">
                   View Details
-                </button>
+                </Link>
               </div>
             </article>
           ))}

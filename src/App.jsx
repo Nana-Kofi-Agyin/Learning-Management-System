@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import CourseCatalogPage from './features/courseCatalog/CourseCatalogPage'
 import CoursePlayerPage from './features/coursePlayer/CoursePlayerPage'
 import DashboardPage from './features/dashboard/DashboardPage'
 import HomePage from './features/home/HomePage'
@@ -9,6 +10,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/course-catalog" element={<CourseCatalogPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/course-player" element={<CoursePlayerPage />} />
         <Route path="/instructor-dashboard" element={<InstructorDashboardPage />} />

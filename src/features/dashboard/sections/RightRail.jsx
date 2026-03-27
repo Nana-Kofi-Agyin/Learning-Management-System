@@ -1,4 +1,5 @@
 import { deadlines, stats } from '../data/content'
+import { Link } from 'react-router-dom'
 
 function RightRail() {
   return (
@@ -40,7 +41,9 @@ function RightRail() {
         <p className="mt-2 text-sm text-slate-500">
           Connect with 150+ fellow students in the UI Systems workspace.
         </p>
-        <button className="mt-4 text-sm font-semibold text-blue-700">Go to Community {'->'}</button>
+        <Link to="/dashboard" className="mt-4 inline-block text-sm font-semibold text-blue-700">
+          Go to Community {'->'}
+        </Link>
       </article>
     </aside>
   )

@@ -1,4 +1,5 @@
 import { engagementBars, overviewCards, recentCourses } from '../data/content'
+import { Link } from 'react-router-dom'
 
 function InstructorMain({ heroImg }) {
   return (
@@ -91,7 +92,9 @@ function InstructorMain({ heroImg }) {
               </div>
             ))}
           </div>
-          <button className="mt-5 text-sm font-semibold text-blue-700">View All Courses</button>
+          <Link to="/course-catalog" className="mt-5 inline-block text-sm font-semibold text-blue-700">
+            View All Courses
+          </Link>
         </article>
       </section>
 
@@ -104,9 +107,12 @@ function InstructorMain({ heroImg }) {
           You have 12 new assignments to grade and 4 students waiting for feedback on the Python for Finance module.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <button className="rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800">
+          <Link
+            to="/course-player"
+            className="rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800"
+          >
             Go to Assessments
-          </button>
+          </Link>
           <button className="rounded-lg bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
             Dismiss Notice
           </button>

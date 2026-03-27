@@ -1,23 +1,36 @@
 import { navigationLinks } from '../data/content'
+import { Link } from 'react-router-dom'
 
 function Header() {
+  const navRouteMap = {
+    Courses: '/course-catalog',
+    Instructors: '/instructor-dashboard',
+    Enterprise: '/dashboard',
+    Pricing: '/course-catalog',
+  }
+
   return (
     <header className="mb-10 flex items-center justify-between">
-      <div className="text-sm font-semibold tracking-tight">InfiLearn</div>
+      <Link to="/" className="text-sm font-semibold tracking-tight">
+        InfiLearn
+      </Link>
       <nav className="hidden items-center gap-6 text-xs text-slate-600 md:flex">
         {navigationLinks.map((item) => (
-          <a key={item} href="#" className="transition hover:text-slate-900">
+          <Link key={item} to={navRouteMap[item] || '/'} className="transition hover:text-slate-900">
             {item}
-          </a>
+          </Link>
         ))}
       </nav>
       <div className="flex items-center gap-3 text-xs">
-        <button className="font-medium text-slate-600 transition hover:text-slate-900">
+        <Link to="/dashboard" className="font-medium text-slate-600 transition hover:text-slate-900">
           Login
-        </button>
-        <button className="rounded-lg bg-blue-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-blue-800">
+        </Link>
+        <Link
+          to="/course-catalog"
+          className="rounded-lg bg-blue-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-blue-800"
+        >
           Get Started
-        </button>
+        </Link>
       </div>
     </header>
   )

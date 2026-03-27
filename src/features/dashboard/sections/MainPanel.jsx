@@ -1,4 +1,5 @@
 import { courseProgress, focusCards } from '../data/content'
+import { Link } from 'react-router-dom'
 
 function MainPanel({ heroImg }) {
   return (
@@ -23,9 +24,12 @@ function MainPanel({ heroImg }) {
               Module 4: Establishing Design Tokens and Semantic Color Logic
             </p>
             <div className="mt-5 flex items-center gap-4">
-              <button className="rounded-lg bg-cyan-300 px-4 py-2 text-sm font-semibold text-cyan-900 transition hover:bg-cyan-200">
+              <Link
+                to="/course-player"
+                className="rounded-lg bg-cyan-300 px-4 py-2 text-sm font-semibold text-cyan-900 transition hover:bg-cyan-200"
+              >
                 Resume Learning
-              </button>
+              </Link>
               <span className="text-sm text-blue-200">42 mins remaining</span>
             </div>
           </div>
@@ -60,11 +64,17 @@ function MainPanel({ heroImg }) {
       <article className="rounded-2xl border border-slate-200 bg-white p-5">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-2xl font-semibold text-blue-900">Enrolled Courses</h3>
-          <button className="text-sm font-semibold text-blue-700">View All</button>
+          <Link to="/course-catalog" className="text-sm font-semibold text-blue-700">
+            View All
+          </Link>
         </div>
         <div className="space-y-3">
           {courseProgress.map((course) => (
-            <div key={course.title} className="flex items-center gap-4 rounded-xl border border-slate-200 px-4 py-3">
+            <Link
+              key={course.title}
+              to="/course-player"
+              className="flex items-center gap-4 rounded-xl border border-slate-200 px-4 py-3 transition hover:border-blue-200 hover:bg-blue-50/30"
+            >
               <img src={heroImg} alt={course.title} className="h-14 w-14 rounded-lg object-cover" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-base font-semibold text-slate-900">{course.title}</p>
@@ -76,7 +86,7 @@ function MainPanel({ heroImg }) {
                 <p className="text-base font-semibold text-blue-800">{course.progress}%</p>
                 <p className="text-[11px] uppercase tracking-wider text-slate-400">{course.status}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </article>

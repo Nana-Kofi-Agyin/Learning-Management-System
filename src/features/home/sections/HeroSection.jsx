@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 function HeroSection({ heroImg }) {
   return (
     <section className="grid items-center gap-8 lg:grid-cols-2">
@@ -12,12 +14,18 @@ function HeroSection({ heroImg }) {
           Experience a curated editorial learning journey. Master new skills through personalized pathways designed by industry pioneers in our Cognitive Atelier.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <button className="rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-blue-700/30 transition hover:-translate-y-0.5 hover:bg-blue-800">
+          <Link
+            to="/course-catalog"
+            className="rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-blue-700/30 transition hover:-translate-y-0.5 hover:bg-blue-800"
+          >
             Explore Courses
-          </button>
-          <button className="rounded-lg bg-cyan-300 px-5 py-3 text-sm font-semibold text-cyan-900 transition hover:-translate-y-0.5 hover:bg-cyan-200">
+          </Link>
+          <Link
+            to="/dashboard"
+            className="rounded-lg bg-cyan-300 px-5 py-3 text-sm font-semibold text-cyan-900 transition hover:-translate-y-0.5 hover:bg-cyan-200"
+          >
             Get Started for Free
-          </button>
+          </Link>
         </div>
       </div>
 
