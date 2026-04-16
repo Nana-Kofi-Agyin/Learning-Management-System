@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.log
+
+# Backend env files
+backend/.env
+
+# Frontend build and deps
+frontend/infiLearn/node_modules/
+frontend/infiLearn/dist/
+
+# OS/editor noise
+.DS_Store
+.vscode/

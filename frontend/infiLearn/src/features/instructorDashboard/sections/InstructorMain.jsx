@@ -2,6 +2,8 @@ import { engagementBars, overviewCards, recentCourses } from '../data/content'
 import { Link } from 'react-router-dom'
 
 function InstructorMain({ heroImg }) {
+  const revenueBars = ['h-5', 'h-7', 'h-6', 'h-9', 'h-11', 'h-8', 'h-10']
+
   return (
     <main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <section className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -24,11 +26,10 @@ function InstructorMain({ heroImg }) {
             +12.4% vs last month
           </p>
           <div className="mt-6 flex items-end gap-2">
-            {[20, 28, 24, 36, 44, 32, 38].map((height, index) => (
+            {revenueBars.map((barHeightClass, index) => (
               <div
                 key={`rev-${index}`}
-                className={`w-8 rounded-sm sm:w-10 ${index === 4 ? 'bg-blue-700' : 'bg-slate-200'}`}
-                style={{ height: `${height}px` }}
+                className={`w-8 rounded-sm sm:w-10 ${barHeightClass} ${index === 4 ? 'bg-blue-700' : 'bg-slate-200'}`}
               ></div>
             ))}
           </div>

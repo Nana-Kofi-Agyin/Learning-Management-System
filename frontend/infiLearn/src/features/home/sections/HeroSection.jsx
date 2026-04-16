@@ -11,7 +11,7 @@ function HeroSection({ heroImg }) {
           Empower Your Future with <span className="text-blue-700">InfiLearn</span>
         </h1>
         <p className="mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
-          Experience a curated editorial learning journey. Master new skills through personalized pathways designed by industry pioneers in our Cognitive Atelier.
+          Experience a curated editorial learning journey. Master new skills through personalized pathways designed by industry pioneers on InfiLearn.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
           <Link

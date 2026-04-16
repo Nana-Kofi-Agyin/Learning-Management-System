@@ -1,0 +1,58 @@
+export const navLinks = ['Dashboard', 'Library', 'My Courses']
+
+export const courses = [
+  {
+    id: 'course-1',
+    tag: 'AI Design',
+    title: 'Generative Interfaces for Product Teams',
+    instructor: 'Prof. Elena Vance',
+    rating: '4.9',
+    learners: '1.4k',
+    price: '$39.00',
+  },
+  {
+    id: 'course-2',
+    tag: 'Leadership',
+    title: 'Storytelling for Technical Leaders',
+    instructor: 'A. Mensah',
+    rating: '4.8',
+    learners: '980',
+    price: '$29.00',
+  },
+  {
+    id: 'course-3',
+    tag: 'Frontend',
+    title: 'Advanced React UI Systems',
+    instructor: 'J. Torres',
+    rating: '4.7',
+    learners: '2.1k',
+    price: '$34.00',
+  },
+  {
+    id: 'course-4',
+    tag: 'Analytics',
+    title: 'Product Analytics for Decision Makers',
+    instructor: 'N. Patel',
+    rating: '4.8',
+    learners: '1.1k',
+    price: '$32.00',
+  },
+  {
+    id: 'course-5',
+    tag: 'Design Ops',
+    title: 'Design Operations at Scale',
+    instructor: 'M. Hwang',
+    rating: '4.6',
+    learners: '760',
+    price: '$27.00',
+  },
+  {
+    id: 'course-6',
+    tag: 'Career',
+    title: 'Portfolio Strategy for Senior Roles',
+    instructor: 'R. Stone',
+    rating: '4.9',
+    learners: '1.9k',
+    price: '$21.00',
+  },
+]

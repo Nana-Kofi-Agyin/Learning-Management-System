@@ -1,4 +1,4 @@
-import heroImg from '../../assets/hero.png'
+import heroImg from '../../assets/hero.svg'
 import CatalogContent from './sections/CatalogContent'
 import CatalogSidebar from './sections/CatalogSidebar'
 import CatalogTopbar from './sections/CatalogTopbar'

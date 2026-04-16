@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import heroImg from '../../assets/hero.png'
+import heroImg from '../../assets/hero.svg'
 
 const roleCards = [
   {
@@ -34,7 +34,7 @@ function RoleSelectionPage() {
       <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
         <header className="mx-auto max-w-3xl text-center">
           <p className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-blue-800">
-            Welcome to the Atelier
+            Welcome to InfiLearn
           </p>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-blue-900 sm:text-5xl">Choose Your Path</h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600">
@@ -80,15 +80,15 @@ function RoleSelectionPage() {
         </section>
 
         <footer className="mt-10 flex flex-col gap-2 border-t border-slate-200 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
-          <p>Cognitive Atelier</p>
-          <p>© 2026 Cognitive Atelier. All rights reserved.</p>
+          <p>InfiLearn</p>
+          <p>© 2026 InfiLearn. All rights reserved.</p>
           <div className="flex items-center justify-center gap-4 sm:justify-end">
-            <a href="#" className="hover:text-slate-700">
+            <Link to="/" className="hover:text-slate-700">
               Privacy Policy
-            </a>
-            <a href="#" className="hover:text-slate-700">
+            </Link>
+            <Link to="/" className="hover:text-slate-700">
               Terms of Service
-            </a>
+            </Link>
           </div>
         </footer>
       </main>
