@@ -4,7 +4,7 @@ function Topbar() {
   return (
     <header className="border-b border-slate-200 bg-slate-50 px-4 py-4 sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 sm:gap-4">
-        <Link to="/" className="text-2xl font-bold tracking-tight text-blue-900">
+        <Link to="/" className="min-w-0 text-xl font-bold tracking-tight text-blue-900 sm:text-2xl">
           InfiLearn
         </Link>
 
@@ -30,10 +30,25 @@ function Topbar() {
           <button className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600">
             N
           </button>
-          <button className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-blue-300 bg-blue-50 text-xs font-semibold text-blue-700">
+          <button className="hidden h-9 w-9 items-center justify-center rounded-full border border-blue-300 bg-blue-50 text-xs font-semibold text-blue-700 sm:inline-flex">
             A
           </button>
         </div>
+
+        <nav className="flex w-full items-center gap-2 overflow-x-auto pb-1 text-xs text-slate-600 md:hidden">
+          <Link to="/dashboard" className="rounded-full bg-blue-100 px-3 py-1.5 font-semibold text-blue-800">
+            Dashboard
+          </Link>
+          <Link to="/course-player" className="rounded-full border border-slate-200 bg-white px-3 py-1.5">
+            My Courses
+          </Link>
+          <Link to="/course-catalog" className="rounded-full border border-slate-200 bg-white px-3 py-1.5">
+            Library
+          </Link>
+          <Link to="/instructor-dashboard" className="rounded-full border border-slate-200 bg-white px-3 py-1.5">
+            Resources
+          </Link>
+        </nav>
       </div>
     </header>
   )
