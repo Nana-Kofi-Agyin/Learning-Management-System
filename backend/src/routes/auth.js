@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { pool } = require("../config/db");
+const User = require("../models/User");
 const env = require("../config/env");
 
 const router = express.Router();
@@ -26,20 +26,34 @@ router.post("/register", async (req, res, next) => {
 
   try {
     const passwordHash = await bcrypt.hash(password, 10);
-    const insertSql = `
-      INSERT INTO users (full_name, email, password_hash, role)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id, full_name, email, role, created_at
-    `;
+    const existingUser = await User.findOne({ email: email.toLowerCase() }).lean();
 
-    const result = await pool.query(insertSql, [fullName, email.toLowerCase(), passwordHash, role]);
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already exists"
+      });
+    }
+
+    const user = await User.create({
+      fullName,
+      email: email.toLowerCase(),
+      passwordHash,
+      role
+    });
 
     return res.status(201).json({
       success: true,
-      user: result.rows[0]
+      user: {
+        id: String(user._id),
+        full_name: user.fullName,
+        email: user.email,
+        role: user.role,
+        created_at: user.createdAt
+      }
     });
   } catch (err) {
-    if (err.code === "23505") {
+    if (err.code === 11000) {
       return res.status(409).json({
         success: false,
         message: "Email already exists"
@@ -61,15 +75,7 @@ router.post("/login", async (req, res, next) => {
   }
 
   try {
-    const userSql = `
-      SELECT id, email, role, password_hash
-      FROM users
-      WHERE email = $1
-      LIMIT 1
-    `;
-
-    const result = await pool.query(userSql, [email.toLowerCase()]);
-    const user = result.rows[0];
+    const user = await User.findOne({ email: email.toLowerCase() }).lean();
 
     if (!user) {
       return res.status(401).json({
@@ -78,7 +84,7 @@ router.post("/login", async (req, res, next) => {
       });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
 
     if (!isMatch) {
       return res.status(401).json({
@@ -94,7 +100,7 @@ router.post("/login", async (req, res, next) => {
       },
       env.jwtSecret,
       {
-        subject: String(user.id),
+        subject: String(user._id),
         expiresIn: env.jwtExpiresIn
       }
     );
@@ -103,7 +109,7 @@ router.post("/login", async (req, res, next) => {
       success: true,
       token,
       user: {
-        id: user.id,
+        id: String(user._id),
         email: user.email,
         role: user.role
       }

@@ -1,32 +1,46 @@
 const express = require("express");
-const { pool } = require("../config/db");
+const mongoose = require("mongoose");
+const Course = require("../models/Course");
+const Module = require("../models/Module");
 const { requireAuth, requireRole } = require("../middleware/auth");
 
 const router = express.Router();
 const writeGuard = [requireAuth, requireRole(["admin", "instructor"])];
 
+function toCourseDto(course) {
+  return {
+    id: String(course._id),
+    title: course.title,
+    description: course.description,
+    is_published: course.isPublished,
+    created_at: course.createdAt,
+    updated_at: course.updatedAt,
+    instructor_id: String(course.instructorId?._id || course.instructorId),
+    instructor_name: course.instructorId?.fullName || null
+  };
+}
+
+function toModuleDto(module) {
+  return {
+    id: String(module._id),
+    course_id: String(module.courseId),
+    title: module.title,
+    module_order: module.moduleOrder,
+    created_at: module.createdAt,
+    updated_at: module.updatedAt
+  };
+}
+
 router.get("/", async (req, res, next) => {
   try {
-    const sql = `
-      SELECT
-        c.id,
-        c.title,
-        c.description,
-        c.is_published,
-        c.created_at,
-        c.updated_at,
-        c.instructor_id,
-        u.full_name AS instructor_name
-      FROM courses c
-      JOIN users u ON u.id = c.instructor_id
-      ORDER BY c.created_at DESC
-    `;
-
-    const result = await pool.query(sql);
+    const courses = await Course.find()
+      .populate("instructorId", "fullName")
+      .sort({ createdAt: -1 })
+      .lean();
 
     return res.json({
       success: true,
-      courses: result.rows
+      courses: courses.map(toCourseDto)
     });
   } catch (err) {
     return next(err);
@@ -37,25 +51,16 @@ router.get("/:courseId", async (req, res, next) => {
   const { courseId } = req.params;
 
   try {
-    const sql = `
-      SELECT
-        c.id,
-        c.title,
-        c.description,
-        c.is_published,
-        c.created_at,
-        c.updated_at,
-        c.instructor_id,
-        u.full_name AS instructor_name
-      FROM courses c
-      JOIN users u ON u.id = c.instructor_id
-      WHERE c.id = $1
-      LIMIT 1
-    `;
+    if (!mongoose.isValidObjectId(courseId)) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found"
+      });
+    }
 
-    const result = await pool.query(sql, [courseId]);
+    const course = await Course.findById(courseId).populate("instructorId", "fullName").lean();
 
-    if (!result.rows.length) {
+    if (!course) {
       return res.status(404).json({
         success: false,
         message: "Course not found"
@@ -64,7 +69,7 @@ router.get("/:courseId", async (req, res, next) => {
 
     return res.json({
       success: true,
-      course: result.rows[0]
+      course: toCourseDto(course)
     });
   } catch (err) {
     return next(err);
@@ -82,17 +87,31 @@ router.post("/", ...writeGuard, async (req, res, next) => {
   }
 
   try {
-    const sql = `
-      INSERT INTO courses (instructor_id, title, description, is_published)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id, instructor_id, title, description, is_published, created_at, updated_at
-    `;
+    if (!mongoose.isValidObjectId(req.user.id)) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      });
+    }
 
-    const result = await pool.query(sql, [req.user.id, title, description, Boolean(isPublished)]);
+    const course = await Course.create({
+      instructorId: req.user.id,
+      title,
+      description,
+      isPublished: Boolean(isPublished)
+    });
 
     return res.status(201).json({
       success: true,
-      course: result.rows[0]
+      course: {
+        id: String(course._id),
+        instructor_id: String(course.instructorId),
+        title: course.title,
+        description: course.description,
+        is_published: course.isPublished,
+        created_at: course.createdAt,
+        updated_at: course.updatedAt
+      }
     });
   } catch (err) {
     return next(err);
@@ -103,18 +122,18 @@ router.get("/:courseId/modules", async (req, res, next) => {
   const { courseId } = req.params;
 
   try {
-    const sql = `
-      SELECT id, course_id, title, module_order, created_at, updated_at
-      FROM modules
-      WHERE course_id = $1
-      ORDER BY module_order ASC, id ASC
-    `;
+    if (!mongoose.isValidObjectId(courseId)) {
+      return res.json({
+        success: true,
+        modules: []
+      });
+    }
 
-    const result = await pool.query(sql, [courseId]);
+    const modules = await Module.find({ courseId }).sort({ moduleOrder: 1, _id: 1 }).lean();
 
     return res.json({
       success: true,
-      modules: result.rows
+      modules: modules.map(toModuleDto)
     });
   } catch (err) {
     return next(err);
@@ -133,26 +152,38 @@ router.post("/:courseId/modules", ...writeGuard, async (req, res, next) => {
   }
 
   try {
-    const checkCourse = await pool.query("SELECT id FROM courses WHERE id = $1 LIMIT 1", [courseId]);
-
-    if (!checkCourse.rows.length) {
+    if (!mongoose.isValidObjectId(courseId)) {
       return res.status(404).json({
         success: false,
         message: "Course not found"
       });
     }
 
-    const sql = `
-      INSERT INTO modules (course_id, title, module_order)
-      VALUES ($1, $2, $3)
-      RETURNING id, course_id, title, module_order, created_at, updated_at
-    `;
+    const course = await Course.findById(courseId).select("_id").lean();
 
-    const result = await pool.query(sql, [courseId, title, Number(moduleOrder) || 1]);
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found"
+      });
+    }
+
+    const moduleDoc = await Module.create({
+      courseId,
+      title,
+      moduleOrder: Number(moduleOrder) || 1
+    });
 
     return res.status(201).json({
       success: true,
-      module: result.rows[0]
+      module: {
+        id: String(moduleDoc._id),
+        course_id: String(moduleDoc.courseId),
+        title: moduleDoc.title,
+        module_order: moduleDoc.moduleOrder,
+        created_at: moduleDoc.createdAt,
+        updated_at: moduleDoc.updatedAt
+      }
     });
   } catch (err) {
     return next(err);

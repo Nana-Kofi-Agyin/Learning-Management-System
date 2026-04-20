@@ -1,18 +1,18 @@
 # Database Schema
 
-The file `backend/sql/lms_schema.sql` defines a PostgreSQL schema for a Learning Management System (LMS).
+The backend uses MongoDB with Mongoose models for Learning Management System (LMS) data.
 
 ## Core Design
 
-### Enum Type
+### Role Enum
 
-- `user_role`: `admin`, `instructor`, `student`
+- `role`: `admin`, `instructor`, `student`
 
-### Shared Trigger Function
+### Shared Timestamps
 
-- `set_updated_at()` automatically updates `updated_at` before row updates.
+- Models use `timestamps: true`, which automatically maintains `createdAt` and `updatedAt`.
 
-## Tables and Purpose
+## Collections and Purpose
 
 1. `users`
 - Stores all platform users.
@@ -20,48 +20,25 @@ The file `backend/sql/lms_schema.sql` defines a PostgreSQL schema for a Learning
 
 2. `courses`
 - Stores courses created by instructors.
-- References `users(id)` through `instructor_id`.
+- References `users._id` through `instructorId`.
 
 3. `modules`
 - Stores course modules/sections.
-- References `courses(id)`.
+- References `courses._id`.
 
 4. `lessons`
 - Stores lesson content in modules.
-- References `modules(id)`.
+- References `modules._id`.
 
 5. `quizzes`
-- Stores quizzes linked to lessons.
-- References `lessons(id)`.
+- Reserved collection in readiness checks.
+- Not yet modeled in API routes.
 
 6. `enrollments`
-- Join table between users and courses.
-- Enforces one enrollment per user/course pair with a unique constraint.
+- Reserved collection in readiness checks.
+- Not yet modeled in API routes.
 
-## Referential Integrity
+## Notes
 
-Foreign keys use `ON DELETE CASCADE` to clean child records automatically when a parent is removed.
-
-## Indexing
-
-Explicit indexes exist for:
-
-- `enrollments.user_id`
-- `enrollments.course_id`
-- `courses.instructor_id`
-- `modules.course_id`
-- `lessons.module_id`
-- `quizzes.lesson_id`
-
-These improve common lookup performance.
-
-## Update Triggers
-
-Each table has a `BEFORE UPDATE` trigger to run `set_updated_at()`:
-
-- `users`
-- `courses`
-- `modules`
-- `lessons`
-- `quizzes`
-- `enrollments`
+- MongoDB creates collections automatically on first write.
+- Uniqueness for user email is enforced by the `users.email` unique index.

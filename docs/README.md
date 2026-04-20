@@ -4,9 +4,9 @@ This folder documents everything implemented so far in the InfiLearn workspace.
 
 ## Current Project Status
 
-- Backend: Initialized and running with Express + PostgreSQL connection support.
+- Backend: Initialized and running with Express + MongoDB (Mongoose) connection support.
 - Frontend: Folder exists but no implementation files yet.
-- Database: Full LMS schema drafted in SQL.
+- Database: MongoDB collections are used for LMS data.
 
 ## Documentation Index
 

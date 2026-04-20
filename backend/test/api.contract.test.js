@@ -3,20 +3,28 @@ const assert = require("node:assert/strict");
 const request = require("supertest");
 
 const app = require("../src/app");
-const { pool } = require("../src/config/db");
+const { dbOps } = require("../src/config/db");
 
-const realQuery = pool.query.bind(pool);
+const realPing = dbOps.ping;
+const realGetReadinessChecks = dbOps.getReadinessChecks;
 
-function mockPoolQuery(impl) {
-  pool.query = impl;
+function mockDbOps({ ping, getReadinessChecks }) {
+  if (typeof ping === "function") {
+    dbOps.ping = ping;
+  }
+
+  if (typeof getReadinessChecks === "function") {
+    dbOps.getReadinessChecks = getReadinessChecks;
+  }
 }
 
-function restorePoolQuery() {
-  pool.query = realQuery;
+function restoreDbOps() {
+  dbOps.ping = realPing;
+  dbOps.getReadinessChecks = realGetReadinessChecks;
 }
 
 test.afterEach(() => {
-  restorePoolQuery();
+  restoreDbOps();
 });
 
 test("GET /api returns service status", async () => {
@@ -28,12 +36,8 @@ test("GET /api returns service status", async () => {
 });
 
 test("GET /api/health returns db time", async () => {
-  mockPoolQuery(async (sql) => {
-    if (String(sql).includes("SELECT NOW()")) {
-      return { rows: [{ server_time: "2026-03-27T00:00:00.000Z" }] };
-    }
-
-    throw new Error(`Unexpected SQL in health test: ${sql}`);
+  mockDbOps({
+    ping: async () => "2026-03-27T00:00:00.000Z"
   });
 
   const response = await request(app).get("/api/health");
@@ -44,29 +48,19 @@ test("GET /api/health returns db time", async () => {
 });
 
 test("GET /api/readiness returns ready when schema tables exist", async () => {
-  mockPoolQuery(async (sql) => {
-    const normalized = String(sql).trim();
-
-    if (normalized.includes("SELECT NOW()")) {
-      return { rows: [{ server_time: "2026-03-27T00:00:00.000Z" }] };
-    }
-
-    if (normalized.includes("to_regclass('public.users')")) {
-      return {
-        rows: [
-          {
-            users: true,
-            courses: true,
-            modules: true,
-            lessons: true,
-            quizzes: true,
-            enrollments: true
-          }
-        ]
-      };
-    }
-
-    throw new Error(`Unexpected SQL in readiness test: ${sql}`);
+  mockDbOps({
+    ping: async () => "2026-03-27T00:00:00.000Z",
+    getReadinessChecks: async () => ({
+      tables: {
+        users: true,
+        courses: true,
+        modules: true,
+        lessons: true,
+        quizzes: true,
+        enrollments: true
+      },
+      missingTables: []
+    })
   });
 
   const response = await request(app).get("/api/readiness");

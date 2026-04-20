@@ -3,7 +3,7 @@
 ## Backend Prerequisites
 
 - Node.js (recommended current LTS)
-- PostgreSQL
+- MongoDB
 
 ## Install Dependencies
 
@@ -24,21 +24,16 @@ CORS_ORIGIN=*
 JWT_SECRET=change-me
 JWT_EXPIRES_IN=7d
 
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=infilearn
-DB_SSL=false
+MONGO_URI=mongodb://127.0.0.1:27017/infilearn
+MONGO_DB_NAME=infilearn
 ```
 
 Notes:
-- If DB variables are missing, startup prints warnings and uses defaults.
-- `DB_SSL=true` enables SSL with `rejectUnauthorized: false` in the current setup.
+- If `MONGO_URI` is missing, startup prints warnings and uses defaults.
 
-## Create Database Schema
+## Initialize Database
 
-Apply SQL in `backend/sql/lms_schema.sql` to your PostgreSQL database.
+Collections are created automatically by MongoDB as data is inserted.
 
 ## Run the Backend
 
@@ -70,11 +65,11 @@ npm test
 
 - `GET /api/` should confirm service is running.
 - `GET /api/health` should return DB server time.
-- `GET /api/readiness` should confirm required tables are present.
+- `GET /api/readiness` should confirm required collections are present.
 
 ## Graceful Shutdown
 
 On `Ctrl+C` or termination signal, the app:
 - Stops accepting new HTTP connections.
-- Closes PostgreSQL pool connections.
+- Closes MongoDB connections.
 - Exits cleanly.

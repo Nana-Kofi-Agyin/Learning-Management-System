@@ -9,8 +9,8 @@ The project currently contains a working backend service and an empty frontend w
 - Entry point starts an HTTP server and loads configuration.
 - Express app is configured with security and parsing middleware.
 - API root and health-check routes are available.
-- PostgreSQL pool is configured and tested on startup.
-- Graceful shutdown logic closes the server and DB pool on `SIGINT`/`SIGTERM`.
+- MongoDB connection is configured and tested on startup.
+- Graceful shutdown logic closes the server and DB connection on `SIGINT`/`SIGTERM`.
 - Standard error and 404 handlers are implemented.
 
 ### Frontend
@@ -22,16 +22,16 @@ The project currently contains a working backend service and an empty frontend w
 - `backend/index.js`: Starts server, checks DB connectivity, handles shutdown.
 - `backend/src/app.js`: Creates the Express app and mounts middleware/routes.
 - `backend/src/config/env.js`: Loads `.env` variables and defines defaults.
-- `backend/src/config/db.js`: Configures PostgreSQL pool and connection check.
+- `backend/src/config/db.js`: Configures MongoDB connection and readiness checks.
 - `backend/src/routes/index.js`: Defines root and health endpoints.
 - `backend/src/middleware/errorHandler.js`: Handles not-found and runtime errors.
-- `backend/sql/lms_schema.sql`: Defines LMS database tables, triggers, and indexes.
+- `backend/src/models/`: Defines LMS MongoDB data models.
 
 ## Dependencies Installed
 
 Runtime dependencies:
 - `express`
-- `pg`
+- `mongoose`
 - `dotenv`
 - `helmet`
 - `cors`

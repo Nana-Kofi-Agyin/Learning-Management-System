@@ -33,7 +33,7 @@ Base route prefix:
 {
   "success": true,
   "status": "ok",
-  "dbTime": "<postgres timestamp>"
+  "dbTime": "<ISO timestamp>"
 }
 ```
 
@@ -43,14 +43,14 @@ If database access fails, request is passed to the global error handler and retu
 
 - Method: `GET`
 - Path: `/api/readiness`
-- Purpose: Confirms database connectivity and expected schema tables.
+- Purpose: Confirms database connectivity and expected collections.
 - Success response shape:
 
 ```json
 {
   "success": true,
   "status": "ready",
-  "dbTime": "<postgres timestamp>",
+  "dbTime": "<ISO timestamp>",
   "checks": {
     "database": true,
     "tables": {

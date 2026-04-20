@@ -1,26 +1,40 @@
 const express = require("express");
-const { pool } = require("../config/db");
+const mongoose = require("mongoose");
+const Module = require("../models/Module");
+const Lesson = require("../models/Lesson");
 const { requireAuth, requireRole } = require("../middleware/auth");
 
 const router = express.Router();
 const writeGuard = [requireAuth, requireRole(["admin", "instructor"])];
 
+function toLessonDto(lesson) {
+  return {
+    id: String(lesson._id),
+    module_id: String(lesson.moduleId),
+    title: lesson.title,
+    content: lesson.content,
+    lesson_order: lesson.lessonOrder,
+    created_at: lesson.createdAt,
+    updated_at: lesson.updatedAt
+  };
+}
+
 router.get("/:moduleId/lessons", async (req, res, next) => {
   const { moduleId } = req.params;
 
   try {
-    const sql = `
-      SELECT id, module_id, title, content, lesson_order, created_at, updated_at
-      FROM lessons
-      WHERE module_id = $1
-      ORDER BY lesson_order ASC, id ASC
-    `;
+    if (!mongoose.isValidObjectId(moduleId)) {
+      return res.json({
+        success: true,
+        lessons: []
+      });
+    }
 
-    const result = await pool.query(sql, [moduleId]);
+    const lessons = await Lesson.find({ moduleId }).sort({ lessonOrder: 1, _id: 1 }).lean();
 
     return res.json({
       success: true,
-      lessons: result.rows
+      lessons: lessons.map(toLessonDto)
     });
   } catch (err) {
     return next(err);
@@ -39,26 +53,32 @@ router.post("/:moduleId/lessons", ...writeGuard, async (req, res, next) => {
   }
 
   try {
-    const checkModule = await pool.query("SELECT id FROM modules WHERE id = $1 LIMIT 1", [moduleId]);
-
-    if (!checkModule.rows.length) {
+    if (!mongoose.isValidObjectId(moduleId)) {
       return res.status(404).json({
         success: false,
         message: "Module not found"
       });
     }
 
-    const sql = `
-      INSERT INTO lessons (module_id, title, content, lesson_order)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id, module_id, title, content, lesson_order, created_at, updated_at
-    `;
+    const moduleDoc = await Module.findById(moduleId).select("_id").lean();
 
-    const result = await pool.query(sql, [moduleId, title, content, Number(lessonOrder) || 1]);
+    if (!moduleDoc) {
+      return res.status(404).json({
+        success: false,
+        message: "Module not found"
+      });
+    }
+
+    const lesson = await Lesson.create({
+      moduleId,
+      title,
+      content,
+      lessonOrder: Number(lessonOrder) || 1
+    });
 
     return res.status(201).json({
       success: true,
-      lesson: result.rows[0]
+      lesson: toLessonDto(lesson)
     });
   } catch (err) {
     return next(err);
