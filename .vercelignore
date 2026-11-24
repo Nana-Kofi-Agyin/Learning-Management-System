@@ -1,6 +1,6 @@
-_legacy
-frontend
-supabase
+/_legacy
+/frontend
+/supabase
 .env.local
 .env*.local
 *.log
