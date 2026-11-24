@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import { createClient } from '@/lib/supabase/server'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 function safePdfText(value: string): string {
   return value.replace(/[^\x20-\xFF]/g, '').trim()
 }

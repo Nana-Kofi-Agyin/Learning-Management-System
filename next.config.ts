@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  outputFileTracingRoot: process.cwd(),
   images: {
     // Serve lightweight modern formats automatically for mobile & low-bandwidth users
     formats: ['image/avif', 'image/webp'],
